@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include "application.h"
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -38,7 +40,7 @@ void debugShader(GLuint vertexShader, GLuint fragmentShader, GLuint shaderProgra
 
 GLuint loadShader(const char *vertexfilename, const char *fragmentfilename) {
   GLuint program = 0, vertex_shader_id = 0, fragment_shader_id = 0;
-
+  
   // TODO: Functions you should know to implement this
   // glCreateShader
   // glShaderSource
@@ -49,6 +51,20 @@ GLuint loadShader(const char *vertexfilename, const char *fragmentfilename) {
   // http:// www.opengl.org/sdk/docs/man/
   // http:// www.lighthouse3d.com/tutorials/glsl-tutorial/creating-a-shader/
   // You are provided with the function getTextFile to load a string from a text file
+  
+  const GLchar * tempv = getTextFile(vertexfilename).c_str();
+  const GLchar * tempf = getTextFile(fragmentfilename).c_str();
+  
+  program = glCreateProgram();
+  vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
+  glShaderSource(vertex_shader_id, 1, &tempv, NULL);
+  glCompileShader(vertex_shader_id);
+  glAttachShader(program, vertex_shader_id);
+  fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
+  glShaderSource(fragment_shader_id, 1, &tempf, NULL);
+  glCompileShader(fragment_shader_id);
+  glAttachShader(program, fragment_shader_id);
+  glLinkProgram(program);
 
   debugShader(vertex_shader_id, fragment_shader_id, program);
   return program;
